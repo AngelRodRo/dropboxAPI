@@ -10,6 +10,8 @@ var session = require('express-session');
 var APP_KEY = "awmzvqivixu65rc";
 var APP_SECRET = "dpszqqo9h34gj3z";
 
+var token = "uynxTRDzy2AAAAAAAAAAfe11RdpDjTJkIQr1jb2ulBLlus9RECdE3GPbEHTpvExG";
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
    var csrfToken = generateCSRFToken();
@@ -64,7 +66,7 @@ router.get('/success', function (req, res) {
        req.session.token=data.access_token;
 
        request.post('https://api.dropbox.com/1/account/info', {
-           headers: { Authorization: 'Bearer ' + token }
+           headers: { Authorization: 'Bearer ' + req.session.token }
        }, function (error, response, body) {
            res.send('Logged in successfully as ' + JSON.parse(body).display_name + '.');
        });
@@ -86,38 +88,36 @@ function generateCSRFToken() {
 }
 
 router.get('/uploadfile', function (req, res) {
-   var serverpath="/";//file to be save at what path in server
-   var localpath="/home/colaborador/Documentos/textoplano.txt";//path of the file which is to be uploaded
+   var serverpath="studio-setup-1.png";//file to be save at what path in server
+   var localpath="/home/colaborador/Descargas/imagen.png";//path of the file which is to be uploaded
    if (req.query.error) {
        return res.send('ERROR ' + req.query.error + ': ' + req.query.error_description);
    }
-   fs.readFile(localpath,'utf8', function read(err, data) {
-        if (err) {
-            throw err;
-        }
-        content = data;
-        console.log(content);
-        fileupload(req.session.oauth,content);
+   fs.readFile(localpath, function (err, data) {
+
+      fileupload(serverpath,token,decodedImage);
     });
 });
 
-function fileupload(token,content){
-    request.put('https://api-content.dropbox.com/1/files_put/auto/'+serverpath, {
-    headers:
-    { Authorization: 'Bearer ' + token ,
-      'Content-Type': 'text/plain',
-      body:content
-   }
-},
-    function optionalCallback (err, httpResponse, bodymsg) {
-    if (err) {
-        console.log(err);
-    }
-    else
-    {
-        console.log(bodymsg);
-    }
-});
+function fileupload(serverpath,token,content){
+   request.put('https://api-content.dropbox.com/1/files_put/auto/'+serverpath, {
+      headers:
+      {
+         Authorization: 'Bearer ' + token ,
+         'Content-Type': 'image/png',
+         body:content
+      }
+   },
+   function optionalCallback (err, httpResponse, bodymsg) {
+      if (err) {
+         console.log("Error optional callback");
+         console.log(err);
+      }
+      else
+      {
+         console.log(bodymsg);
+      }
+   });
 }
 
 module.exports = router;
