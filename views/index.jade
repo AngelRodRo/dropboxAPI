@@ -3,3 +3,6 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  form(action="/dropbox/uploadFile", method="post", enctype="multipart/form-data")
+   input(type="file", name="displayImage")
+   input(type="submit",name="upload")

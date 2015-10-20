@@ -34,16 +34,18 @@ router.get('/createFolder',function(req,res,next){
 });
 
 router.get('/createFile',function(req,res,next){
-   var localpath = "/home/colaborador/Descargas/Introduccion.pdf";
-   fs.readFile(localpath, function(err, data){
+   var localpath = "/home/colaborador/Documentos/textoplano.txt";
+   fs.readFile(localpath,"utf8", function(err, data){
       fileupload(data);
+      console.log(data);
    });
 });
 
 
 
 function fileupload(contents){
-   api.createFile('Introduccion.pdf', contents, function(error,response,body){
+   console.log(contents);
+   api.createFile('textoplano3.txt', contents, function(error,response,body){
       if(error){
          console.log(error);
       }
