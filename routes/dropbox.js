@@ -27,16 +27,28 @@ router.get('/',function(req,res,next){
 
 });
 
-router.get('/account',function(req,res,next){
+router.get('/account',function(req,res){
+   getAccount(function(error){
+      if(error)
+         res.send('No se pudo recuperar la cuenta');
+      else {
+         res.send('Se pudo recupera la cuenta');
+      }
+   });
+});
+
+function getAccount(callback){
    client.getAccountInfo(function(error, accountInfo) {
       if (error) {
+         callback(error);
          console.log(error);
       }
       else {
          console.log(accountInfo);
       }
    });
-});
+
+}
 
 
 
